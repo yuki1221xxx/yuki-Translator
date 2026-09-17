@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+models/
+settings.json
+*.log
+build/
+dist/
+releases/
+package-check*.json
+source-check*.json
+tests/browser-test-profile/
+tests/*.json
+app.log
+tts_test.mp3
+*.lnk

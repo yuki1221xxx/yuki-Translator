@@ -1,0 +1,12 @@
+faster-whisper>=1.1,<2
+PyAudioWPatch>=0.2.12.7,<0.3
+numpy>=1.26,<3
+scipy>=1.12,<2
+pywin32>=306
+edge-tts>=7,<8
+comtypes>=1.4,<2
+psutil>=6,<8
+sherpa-onnx==1.13.8
+langid==1.1.6
+sentencepiece>=0.2,<0.3
+ctranslate2>=4.6,<5
