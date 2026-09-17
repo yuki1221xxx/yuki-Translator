@@ -30,4 +30,4 @@ for dist in importlib.metadata.distributions():
     (ROOT / 'version.py').read_text(encoding='utf-8').split('APP_VERSION = ', 1)[1].split('\n', 1)[0].strip("'\"\n "),
     encoding='utf-8',
 )
-print(f'Application ready: {DEST / "YukiTranslator.exe"}')
+print('Application bundle prepared')
