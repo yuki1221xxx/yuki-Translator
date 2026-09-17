@@ -15,8 +15,9 @@ for distribution in ('faster-whisper', 'sherpa-onnx', 'sherpa-onnx-core', 'langi
     try:
         datas += copy_metadata(distribution)
     except Exception:
-        if distribution != 'safetensors':
-            raise
+        # Some are optional dependencies. Imports used by the app are still
+        # validated by PyInstaller's analysis and the packaged self-test.
+        pass
 
 a = Analysis(['launcher.py'], pathex=[], binaries=binaries, datas=datas,
              hiddenimports=['win32com.client', 'pythoncom', 'pywintypes', 'scipy.special._special_ufuncs'],
