@@ -22,7 +22,7 @@ if ($PortableWithModels) {
 if (!$SkipInstaller) {
     $iscc = @(
         "$env:LOCALAPPDATA\Programs\Inno Setup 6\ISCC.exe",
-        "$env:ProgramFiles(x86)\Inno Setup 6\ISCC.exe",
+        "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe",
         "$env:ProgramFiles\Inno Setup 6\ISCC.exe"
     ) | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
     if (!$iscc) { throw 'Inno Setup 6 is required. Install it with: winget install JRSoftware.InnoSetup' }
