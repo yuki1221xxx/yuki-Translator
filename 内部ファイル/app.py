@@ -9,7 +9,7 @@ from tkinter import ttk, messagebox
 from engine import Session, Speaker, audio_devices, speech_devices
 from process_audio import application_processes
 from widgets import Toggle
-from runtime import DATA_DIR
+from runtime import DATA_DIR, FROZEN
 from accuracy import DEFAULT_MODEL, ASR_MODELS
 from speech import TEST_PHRASES
 from i18n import UI_LANGUAGES, message, render, tr
@@ -243,6 +243,11 @@ class App:
         self.refresh()
         root.protocol('WM_DELETE_WINDOW', self.close)
         self.poll_timer = root.after(100, self.poll)
+        self.updater = None
+        if FROZEN:
+            from updater import UpdateManager
+            self.updater = UpdateManager(self)
+            self.updater.start()
 
     def t(self, key, **params):
         return tr(key, self.ui_language.get(), **params)
@@ -548,6 +553,9 @@ class App:
             elif kind == 'installed':
                 self.installing = False
                 self.lock(False)
+            elif kind == 'update_ready':
+                from updater import prompt_and_apply
+                prompt_and_apply(self.root, data, self.ui_language.get())
         self.poll_timer = self.root.after(100, self.poll)
 
     def guide(self):

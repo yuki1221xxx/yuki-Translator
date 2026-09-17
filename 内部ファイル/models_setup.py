@@ -4,6 +4,28 @@ from accuracy import DEFAULT_MODEL, ASR_MODELS, TRANSLATION_REPO, recognition_lo
 from speech import TTS_FOLDER, TTS_REPO, TTS_FILES, tts_location
 from i18n import message
 
+ASR_REQUIRED = [
+    'conv_frontend.onnx', 'encoder.int8.onnx', 'decoder.int8.onnx',
+    'tokenizer/merges.txt', 'tokenizer/vocab.json', 'tokenizer/tokenizer_config.json',
+]
+TRANSLATION_REQUIRED = ['model.bin', 'config.json', 'sentencepiece.bpe.model']
+
+
+def asr_ready(model=DEFAULT_MODEL) -> bool:
+    return all((recognition_location(model) / name).is_file() for name in ASR_REQUIRED)
+
+
+def translation_ready() -> bool:
+    return all((translation_location() / name).is_file() for name in TRANSLATION_REQUIRED)
+
+
+def tts_ready() -> bool:
+    return all((tts_location() / name).is_file() for name in TTS_FILES)
+
+
+def bootstrap_ready(model=DEFAULT_MODEL) -> bool:
+    return asr_ready(model) and translation_ready() and tts_ready()
+
 
 def install_models(report=print, model=DEFAULT_MODEL):
     from huggingface_hub import snapshot_download
@@ -23,6 +45,10 @@ def install_models(report=print, model=DEFAULT_MODEL):
         snapshot_download(TTS_REPO, local_dir=str(MODEL_CACHE / TTS_FOLDER),
                           allow_patterns=['*.onnx', '*.json', '*.bin', 'README.md', '*LICENSE*'])
     report(message('installed'))
+
+
+def install_bootstrap_models(report=print, model=DEFAULT_MODEL):
+    install_models(report, model)
 
 
 if __name__ == '__main__':

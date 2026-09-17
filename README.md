@@ -6,19 +6,11 @@ Windows 向けのローカル翻訳アプリです。通話・ブラウザ・ゲ
 
 **友達向けの配布版は [GitHub Releases](https://github.com/yuki1221xxx/yuki-Translator/releases) からダウンロードしてください。**
 
-1. 最新の Release（`v6.0.0`）を開く
-2. `YukiTranslator-v6.0.0.zip`、または `.part001` などの分割ファイルをすべてダウンロード
-3. 分割ファイルの場合は、同じフォルダーで次を実行して ZIP を復元します:
+1. 最新Releaseの `YukiTranslator-Setup-vX.Y.Z.exe` をダウンロード
+2. セットアップEXEを開いてインストール
+3. 初回起動時にローカルAIモデルが自動でダウンロードされます
 
-```cmd
-copy /b YukiTranslator-v6.0.0.part001+YukiTranslator-v6.0.0.part002+YukiTranslator-v6.0.0.part003 YukiTranslator-v6.0.0.zip
-```
-
-（part の数は Release に合わせて `+` でつなげてください）
-
-4. ZIP を解凍し、`YukiTranslator` フォルダー内の `YukiTranslator.exe` を起動
-
-Python のインストールは不要です。`YukiTranslator` フォルダー全体をそのまま使ってください。
+Pythonの導入や分割ファイルの結合は不要です。インストール後は起動時にGitHub Releasesを確認し、新版があれば自動でダウンロードして更新を案内します。モデルと設定は更新後も保持されます。
 
 ## 開発
 

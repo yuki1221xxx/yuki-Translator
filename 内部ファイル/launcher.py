@@ -16,6 +16,11 @@ def main():
             from package_check import run
             run(sys.argv[sys.argv.index('--self-test') + 1])
         else:
+            from runtime import FROZEN
+            if FROZEN:
+                from setup_ui import run_first_launch_setup
+                if not run_first_launch_setup():
+                    raise SystemExit(0)
             from app import main as start
             start()
     except Exception:

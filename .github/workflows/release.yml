@@ -1,0 +1,62 @@
+name: Build Windows installer
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  windows-installer:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: 内部ファイル
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: 内部ファイル/requirements.txt
+      - name: Install Python dependencies
+        shell: pwsh
+        run: |
+          python -m venv .venv
+          .\.venv\Scripts\python.exe -m pip install --upgrade pip
+          .\.venv\Scripts\python.exe -m pip install -r requirements.txt 'pyinstaller>=6,<7'
+      - name: Install Inno Setup
+        shell: pwsh
+        run: choco install innosetup --no-progress -y
+      - name: Build application and installer
+        shell: pwsh
+        run: .\build.ps1
+      - name: Verify installer name
+        id: artifact
+        shell: pwsh
+        run: |
+          $version = (Select-String -Path version.py -Pattern "APP_VERSION = '([^']+)'").Matches[0].Groups[1].Value
+          if ("v$version" -ne "${{ github.ref_name }}" -and "${{ github.event_name }}" -eq 'push') {
+            throw "Tag ${{ github.ref_name }} does not match app version v$version"
+          }
+          $path = "releases\v$version\installer\YukiTranslator-Setup-v$version.exe"
+          if (!(Test-Path $path)) { throw "Installer not found: $path" }
+          "path=$path" >> $env:GITHUB_OUTPUT
+      - uses: actions/upload-artifact@v4
+        with:
+          name: YukiTranslator-Windows-Installer
+          path: 内部ファイル/${{ steps.artifact.outputs.path }}
+      - name: Attach installer to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view "${{ github.ref_name }}" *> $null
+          if ($LASTEXITCODE -ne 0) {
+            gh release create "${{ github.ref_name }}" --title "yuki Translator ${{ github.ref_name }}" --generate-notes
+          }
+          gh release upload "${{ github.ref_name }}" "${{ steps.artifact.outputs.path }}" --clobber
